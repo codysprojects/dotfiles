@@ -22,6 +22,9 @@ else
   exit
 fi
 
+# Update orgin URL to use ssh  ### 
+# yadm remote set-url origin "git@github.com/codysprojects/dotfiles.git"
+
 # ensure .ssh exists
 if ! [ -d ~/.ssh ]; then
    mkdir -m 700 .ssh
