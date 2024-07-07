@@ -1,5 +1,5 @@
 
-#!/bin/bash
+#!/user/bin/env bash
 
 set -o errexit # Exit the script on error
 set -o pipefail # give exitcode of most to the right pipeline command
@@ -10,7 +10,7 @@ set -o pipefail # give exitcode of most to the right pipeline command
 
 QUIET_MODE=$1
 
-if sudo -n true 2>/dev/null; then
+if test -f /etc/sudoers.d/$USER; then
   echo "user can run passwordless sudo. Moving on" 
 else
   echo "User cannot run passwordless sudo."
@@ -32,21 +32,20 @@ fi
 
 # Install systemwide tools
 sudo apt update
-sudo apt install git unzip bat gcc jq # need to setup alias for bat (alias bat="batcat")  look at creating a 
+sudo apt install git unzip bat gcc jq -y # need to setup alias for bat (alias bat="batcat")  look at creating a 
 
 # Insatll zsh
 # current zsh plugins git z aws docker ansible salt kubectl zsh-autosuggestions zsh-syntax-highlighting
 if ! [ -x "$(command -v zsh)" ]; then
   sudo apt install zsh
-  chsh -s $(which zsh)
-else
+  else
   [[ $QUIET_MODE != quiet ]] && echo "zsh is installed"
 fi
 
 # Install oh-my-zsh
 # oh-my-zsh is just a manager for your zsh configurations, themes, and plugins
 if ! [ -d ~/.oh-my-zsh ]; then
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --keep-zshrc
 else
   [[ $QUIET_MODE != quiet ]] && echo "oh-my-zsh is installed"
 fi
@@ -178,3 +177,5 @@ if ! [ -f /usr/local/bin/kubectx ]; then
 else
   [[ $QUIET_MODE != quiet ]] && echo "kubectx and kubens are installed"
 fi
+
+chsh -s $(which zsh)
