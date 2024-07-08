@@ -19,7 +19,6 @@ else
   echo "and you will have to run this script again."
   echo "Your password will be asked for."
   echo "$USER   ALL=NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER
-  exit
 fi
 
 # Update orgin URL to use ssh  ### 
@@ -37,7 +36,7 @@ sudo apt install git unzip bat gcc jq -y # need to setup alias for bat (alias ba
 # Insatll zsh
 # current zsh plugins git z aws docker ansible salt kubectl zsh-autosuggestions zsh-syntax-highlighting
 if ! [ -x "$(command -v zsh)" ]; then
-  sudo apt install zsh
+  sudo apt install zsh -y
   else
   [[ $QUIET_MODE != quiet ]] && echo "zsh is installed"
 fi
@@ -45,7 +44,7 @@ fi
 # Install oh-my-zsh
 # oh-my-zsh is just a manager for your zsh configurations, themes, and plugins
 if ! [ -d ~/.oh-my-zsh ]; then
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --keep-zshrc
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --keep-zshrc "" --unattended
 else
   [[ $QUIET_MODE != quiet ]] && echo "oh-my-zsh is installed"
 fi
@@ -108,8 +107,6 @@ fi
 if ! [ -x "$(command -v kubectl)" ]; then
   echo "kubectl is not installed.  will install"
   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" #Download binary
-  curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256" #Download checksum
-  echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check # Validate the kubectl binary against the checksum file
   sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl #Install kubectl
 else
   [[ $QUIET_MODE != quiet ]] && echo "kubectl is installed"
